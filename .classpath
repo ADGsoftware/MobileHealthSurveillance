@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/collections-generic-4.01.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/javax.mail.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/javax.mail-1.5.2.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/javax.mail-api-1.5.2.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jcommon-1.0.23.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jfreechart-1.0.19-experimental.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jfreesvg-2.0.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jung-algorithms-2.0.1.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jung-api-2.0.1.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jung-graph-impl-2.0.1.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jung-visualization-2.0.1.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/jxl.jar"/>
+	<classpathentry kind="lib" path="K:/grisha/JAVA/SiemensProgramProject/jars/opencsv-2.3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
