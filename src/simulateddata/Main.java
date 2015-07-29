@@ -10,14 +10,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Main {
-	public static void main (String[] args) throws MalformedURLException, IOException {
-		int numUsers = 40;
-		int numDays = 10;
-		String town = "Needham";
-		String state = "MA";
-		int[][] arrays = run(numUsers, numDays, town, state);
-	}
-	
 	public static int[][] run (int numUsers, int numDays, String town, String state) throws MalformedURLException, IOException {
 		//System.out.println(checkTown(40.714224,-72.9614523));
 		int day = 0;
