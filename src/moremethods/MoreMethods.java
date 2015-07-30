@@ -1185,7 +1185,7 @@ public class MoreMethods {
 				}
 			}
 			//System.out.println("VARS DEFINED");
-			System.out.println("Infected people" + totalSickPeople);
+			//System.out.println("Infected people" + totalSickPeople);
 			infoStorage.add(new ArrayList<InfoStorage>());
 			while (getNumSickPeople(people) > 0) {
 				//int numberSickOnDay = 0;
@@ -1257,7 +1257,7 @@ public class MoreMethods {
 //					}	
 //				}
 				//System.out.println("Total sick:" + totalSickPeople.size());
-				System.out.println("NumSick people: " + getNumSickPeople(people));
+				//System.out.println("NumSick people: " + getNumSickPeople(people));
 				infoStorage.get(runTime).add(new InfoStorage(day, getNumSickPeople(people), totalSickPeople.size(), cost, totalImmunePeople.size()));
 				//System.out.println(people);
 				//System.out.println(getNumSickPeople(people));

@@ -64,6 +64,10 @@ public class DataSimulator {
 		int[] recovered = data[2];
 		int[][] arrays = {susceptible, infected, recovered};
 		
+		System.out.println(User.printArray(susceptible));
+		System.out.println(User.printArray(infected));
+		System.out.println(User.printArray(recovered));
+		
 		return arrays;
 	}
 	

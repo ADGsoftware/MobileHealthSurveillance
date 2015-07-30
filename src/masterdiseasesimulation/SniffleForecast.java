@@ -27,7 +27,7 @@ public class SniffleForecast {
 		
 		int getWellDays = 3;
 		int discovery = 10000;
-		int newGetWellDays = 0;
+		int newGetWellDays = getWellDays;
 		int getVac = 0;
 		int curfewDays = 0;
 		int runtimes = 100;
@@ -66,8 +66,8 @@ public class SniffleForecast {
 		int suceptibleN = (int)(numPeople * suceptible/denominator);
 		initiallySick = (int)(numPeople * infected/denominator);
 		initiallyVacc = (int)(numPeople * recovered/denominator);
-		System.out.println("InitiallySick is "  + initiallySick);
-		System.out.println("InitiallyVacc is "  + initiallyVacc);
+		//System.out.println("InitiallySick is "  + initiallySick);
+		//System.out.println("InitiallyVacc is "  + initiallyVacc);
 		//Run Sims Using last entry of simulated Data/Dyushka's thing
 		InfoJungStorage results = methods.simulateForSniffleForecast(people, newGetWellDays, initiallySick, initiallyVacc, percentSick, getVac, runtimes, true);
 		
