@@ -91,7 +91,62 @@ public class GetData {
 		
 		return true;
 	}
-	
+	public static boolean run (String town, String state) throws MalformedURLException, IOException {
+		ArrayList<String> zips = getZips(town, state);
+		if (zips == null) {
+			clear();
+			return false;
+		}
+		int numZips = zips.size();
+		createProgressBar(numZips);
+		generateVars();
+		System.out.println(zips);
+
+		ArrayList<Integer[]> hsAll = new ArrayList<Integer[]>();
+		ArrayList<Double[]> haAll = new ArrayList<Double[]>();
+		ArrayList<Double[]> agesAll = new ArrayList<Double[]>();
+		
+		String zip = null;
+		for (int i = 0; i < numZips; i++) {
+			zip = zips.get(i);
+			setProgressBar(i);
+			
+			String[] householdSizeList = getVars(householdSizeVars, zip);
+			if (householdSizeList == null) {
+				continue;
+			}
+			int[] hsInt = strToIntArray(householdSizeList);
+			Integer[] hs = fixHouseholdSize(hsInt);
+			hsAll.add(hs);
+
+			String[] householdAgeList = getVars(householdAgeVars, zip);
+			int[] haInt = strToIntArray(householdAgeList);
+			Double[] ha = fixHouseholdAge(haInt);
+			haAll.add(ha);
+
+			String[] agesList = getVars(agesVars, zip);
+			int[] agesInt = strToIntArray(agesList);
+			Double[] ages = fixAges(agesInt);
+			agesAll.add(ages);
+		}
+		
+		setProgressBar(numZips);
+		//System.out.println(hsAll);
+		//System.out.println(haAll);
+		//System.out.println(agesAll);
+		
+		hs = sumInt(hsAll);
+		ha = sumDouble(haAll);
+		ages = sumDouble(agesAll);
+		
+		printArray(hs);
+		printArray(ha);
+		printArray(ages);
+		
+		closeProgressBar();
+		
+		return true;
+	}
 	// SUM UP ALL ARRAYS IN ARRAYLIST ---------------------------------
 	public static int[] sumInt (ArrayList<Integer[]> list) {
 		int len = list.get(0).length;

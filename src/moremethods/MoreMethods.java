@@ -1136,6 +1136,166 @@ public class MoreMethods {
 		//System.out.println("SIMULATION COMPLETE");
 		return infoJungStorage;
 	}
+	public static InfoJungStorage simulateForSniffleForecast(ArrayList<Person> people, int getWellDays, int origSick, int origVacc, int percentSick, int getVac, int runTimes, Boolean modelTownSim) {
+		ArrayList<JungStorage> jungStorage = new ArrayList<JungStorage>();
+		int day = 0;
+		int cost = origVacc;
+		Random random = new Random();
+
+		ArrayList<ArrayList<InfoStorage>> infoStorage = new ArrayList<ArrayList<InfoStorage>>();
+
+		int averageDuration = 0;
+		
+		for(Person p : people){
+			p.setSick(false);
+			p.setImmune(false);
+			p.setDaysSick(0);
+		}
+		//Why are we using ArrayLists, and not Lists?     
+		ArrayList<Integer> totalSickPeople = new ArrayList<Integer>();
+		ArrayList<Integer> totalImmunePeople = new ArrayList<Integer>();
+		for (int runTime = 0; runTime < runTimes; runTime++) {
+			//Makes Random people sick or immune, this should result in less stable graphs
+			for (int i= 0 ; i < origSick; i++) {
+				Boolean done = false;
+				while(!done){
+					int index = random.nextInt(people.size() - 1);
+					if(people.get(index).isSick() || people.get(index).isImmune()){
+						continue;
+					}
+					else{
+						people.get(index).setSick(true);
+						totalSickPeople.add(people.get(index).getID());
+						done = true;
+					}
+				}
+			}
+			for (int i= 0 ; i < origVacc; i++) {
+				Boolean done = false;
+				while(!done){
+					int index = random.nextInt(people.size() - 1);
+					if(people.get(index).isSick() || people.get(index).isImmune()){
+						continue;
+					}
+					else{
+						people.get(index).setImmune(true);
+						totalImmunePeople.add(people.get(index).getID());
+						done = true;
+					}
+				}
+			}
+			//System.out.println("VARS DEFINED");
+			System.out.println("Infected people" + totalSickPeople);
+			infoStorage.add(new ArrayList<InfoStorage>());
+			while (getNumSickPeople(people) > 0) {
+				//int numberSickOnDay = 0;
+				for (Person person : people) {
+
+					if (person.isImmune() && !person.isSick()) {
+						// Do nothing
+					} else if (person.isSick()) {
+						person.incrementDaysSick();
+					} else {
+						ArrayList<Person> friends = person.getFriends();
+						for (Person friend : friends) {
+							if (friend.getDaysSick() > 0 && friend.isSick()) {
+								boolean getSick;
+								//System.out.println(person + " has a get vac of : " + person.getSuceptability());
+								if(modelTownSim) {
+									getSick = (new Random().nextInt(99) + 1) < person.getSuceptability()*percentSick; //because susceptabilities are relative [incorrect]
+								}
+								else{
+									getSick = (new Random().nextInt(99) + 1) < percentSick;
+								}
+								boolean getVacc = (new Random().nextInt(99) + 1) < getVac;
+								if (getSick) {
+									person.setSick(true);
+									totalSickPeople.add(person.getID());
+									break;
+								}
+								else{
+									//System.out.println("Person " + person + " did not get sick from " + friend);
+								}
+								if (getVacc) {
+									person.getWell();
+									totalImmunePeople.add(person.getID());
+									cost++;
+									break;
+								}
+							}
+						}
+					}
+					if (person.getDaysSick() >= getWellDays) { // && !person.isImmune()
+						person.getWell();
+						totalImmunePeople.add(person.getID());
+					}
+				}
+				day++;
+				//FOR JUNG
+				if (runTime == 0) {
+					ArrayList<Person> vaccPeople = new ArrayList<Person>();
+					ArrayList<Person> sickPeople = new ArrayList<Person>();
+					for (Person p : people) {
+						if (p.isImmune()) {
+							vaccPeople.add(p);
+						}
+						if (p.isSick()) {
+							sickPeople.add(p);
+						}
+					}
+
+					jungStorage.add(new JungStorage(vaccPeople, sickPeople, day));
+				}
+				//System.out.println("Day is : " + day);
+				//System.out.println(getNumSickPeople(people));
+//				for(Person p : people){
+//					if(p.isSick() && day == 1000){
+//						System.out.println("The Sick Annoying Person is: " + p + ". THIS PERSON IS VACCINATED: " + p.isImmune() + ". The Day IS: " + day + " .The Runtime is: " + runTime + " out of: " + runTimes + "He has been sick for: " + p.getDaysSick());
+//						System.out.println("He is Included in Immune People " + totalImmunePeople.contains(p));
+//						System.out.println("He is Included in Sick People" + totalSickPeople.contains(p));
+//						System.out.println(people.contains(p));
+//					}	
+//				}
+				//System.out.println("Total sick:" + totalSickPeople.size());
+				System.out.println("NumSick people: " + getNumSickPeople(people));
+				infoStorage.get(runTime).add(new InfoStorage(day, getNumSickPeople(people), totalSickPeople.size(), cost, totalImmunePeople.size()));
+				//System.out.println(people);
+				//System.out.println(getNumSickPeople(people));
+			}
+			averageDuration += day;
+
+			//For any other days, make totalSickPeople equal to the number of total sick people on the last day
+			while (day < ManyLinesAverageObject.daysLimit) {
+				day++;
+				//System.out.println("totalSickPeople.size() = " + totalSickPeople.size());
+				infoStorage.get(runTime).add(new InfoStorage(day, 0, totalSickPeople.size(), cost, totalImmunePeople.size()));
+			}
+
+			day = 0;
+			cost = origVacc;
+
+			totalSickPeople.clear();
+			totalImmunePeople.clear();
+
+			//This should be the new RestAll method but i'm not changing it for now...
+			for(Person p : people){
+				p.setSick(false);
+				p.setImmune(false);
+				p.setDaysSick(0);
+			}
+			//people.get(2).setSick(true); //TODO:Yes, yes! This is the problem. Resetting does not work properly. For now, setting 2 as sick to make it work.
+			// It should, Person.reset() sets the person's sick and vacc states to their original sick and vacc states...
+			//System.out.println("LO AND BEHOLD NEW RUNTIME!!!!!!!!!!!!!!");
+		}
+
+		averageDuration /= runTimes;
+		ManyLinesAverageObject.maxDays = averageDuration;
+
+
+		InfoJungStorage infoJungStorage = new InfoJungStorage(infoStorage, jungStorage);
+		//System.out.println("SIMULATION COMPLETE");
+		return infoJungStorage;
+	}
 
 	public static ArrayList<ArrayList<TransmissionTestInfoStorage>> transmissionTest(ArrayList<Person> people, ArrayList<Person> teenagers, int getWellDays, int origSick, int origVacc, int discovery, int newGetWellDays, int percentSick, int getVac, int curfewDays, int runTimes, int percentCurfewed) {
 		ArrayList<ArrayList<TransmissionTestInfoStorage>> infoStorage = new ArrayList<ArrayList<TransmissionTestInfoStorage>>();
@@ -1433,6 +1593,51 @@ public class MoreMethods {
 		InfoStorage avgInfoStorage = new InfoStorage((double) avgDays, (double)0, (double)avgTotalSick, (double)avgCost, (double) avgImmunePeople);
 
 		return avgInfoStorage;
+	}
+	public ArrayList<InfoStorage> averagedInfostorageLog(ArrayList<ArrayList<InfoStorage>> simOutput){
+		ArrayList<Double> costs = new ArrayList<Double>();
+		ArrayList<Double> days = new ArrayList<Double>();
+		ArrayList<Double> totalSick = new ArrayList<Double>();
+		ArrayList<Double> totalImmune = new ArrayList<Double>();
+		ArrayList<Double> currentlySick = new ArrayList<Double>();
+		ArrayList<InfoStorage> averagedInfostorageLog = new ArrayList<InfoStorage>();
+		//Add to arrayLists
+		
+		//Find minDayLength
+		int minDayLength = 0;
+		for(ArrayList<InfoStorage> runtimeList : simOutput){
+			if(simOutput.get(0) == runtimeList){
+				minDayLength = runtimeList.size();
+			}
+			if(runtimeList.size() < minDayLength){
+				minDayLength = runtimeList.size();
+			}
+		}
+		
+		//FindAverages
+		for (int day = 0; day < minDayLength; day++){
+			for(ArrayList<InfoStorage> runtimeList : simOutput){
+				costs.add(runtimeList.get(day).getCost());
+				days.add(runtimeList.get(day).getDay());
+				totalSick.add(runtimeList.get(day).getTotalSick());
+				totalImmune.add(runtimeList.get(day).getImmune());
+				currentlySick.add(runtimeList.get(day).getNumSick());
+				System.out.println(runtimeList.get(day).getTotalSick());
+				
+				int avgCost = (int) Math.round(findAverage(costs));
+				int avgDays = (int) Math.round(findAverage(days));
+				int avgTotalSick = (int) Math.round(findAverage(totalSick));
+				int avgImmunePeople = (int) Math.round(findAverage(totalImmune));
+				int avgCurrentlySick = (int) Math.round(findAverage(currentlySick));
+				
+				InfoStorage dayEntry = new InfoStorage(avgDays, avgCurrentlySick, avgTotalSick, avgCost, avgImmunePeople);
+				averagedInfostorageLog.add(dayEntry);
+			}
+		}
+		for(InfoStorage i : averagedInfostorageLog){
+			System.out.println(i.getNumSick());
+		}
+		return averagedInfostorageLog;
 	}
 
 	public double findAverage(ArrayList<Double> numbers){
