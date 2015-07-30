@@ -474,7 +474,6 @@ public class ManyLinesAverageObject {
 		InfoJungStorage results;
 
 		results = MoreMethods.simulate(people, teens, getWellDays, infectedPeople, vaccinatedPeople, discovery, newGetWell, percentSick, getVac, curfewDays, runTimes, percentCurfewed, transmissionTest, modelTownSim); //Meh I don't know how to do it better
-
 		Long endTime = System.currentTimeMillis();
 
 		MoreMethods.alert("Completed " + runTimes + " simulations in " + ((endTime - startTime)) + " milliseconds.", "Complete!");

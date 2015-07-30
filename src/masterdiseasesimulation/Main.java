@@ -10,9 +10,12 @@ public class Main {
 		//Play music
 		//if (music) Audio.main(args);
 
-		Object[] options = {"Simulate", "Analyze", "Draw Histograms", "Many Lines Average"};
+		Object[] options = {"Simulate", "Analyze", "Draw Histograms", "Many Lines Average", "Sniffle Forcast"};
 		int selection = JOptionPane.showOptionDialog(null, "What program to run?", "Program Choice", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
-		if (selection ==3){
+		if (selection == 4){
+			SniffleForecast.run();
+		}
+		if (selection == 3){
 			ManyLinesAverageObject.run();
 		}
 		if (selection == 2) {
