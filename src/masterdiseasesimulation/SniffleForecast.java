@@ -27,8 +27,6 @@ public class SniffleForecast {
 		int percentSick;
 		
 		int getWellDays = 3;
-		int discovery = 10000;
-		int newGetWellDays = getWellDays;
 		int getVac = 0;
 		int curfewDays = 0;
 		int runtimes = 100;
@@ -61,7 +59,6 @@ public class SniffleForecast {
 		
 		// Initiate Lists
 		ArrayList<Person> people = modelTown.getPeople();
-		ArrayList<Person> teenagers = modelTown.getTeenagers();
 		
 		// Modify ArrayLists to fit requirements
 		float numPeople = people.size();
@@ -70,13 +67,22 @@ public class SniffleForecast {
 		float recovered = simulatedData[2][numDays - 1];
 		float denominator = suceptible + infected + recovered;
 		
+		System.out.println("PPLSIZE: " + people.size());
+		System.out.println("S: " + suceptible);
+		System.out.println("I: " + infected);
+		System.out.println("R: " + recovered);
 		int suceptibleN = (int)(numPeople * suceptible/denominator);
 		initiallySick = (int)(numPeople * infected/denominator);
 		initiallyVacc = (int)(numPeople * recovered/denominator);
+		
+		System.out.println("Suc: " + suceptibleN);
+		System.out.println("initiallySick: " + initiallySick);
+		System.out.println("initiallyVacc: " + initiallyVacc);
+		
 		//System.out.println("InitiallySick is "  + initiallySick);
 		//System.out.println("InitiallyVacc is "  + initiallyVacc);
 		//Run Sims Using last entry of simulated Data/Dyushka's thing
-		InfoJungStorage results = methods.simulateForSniffleForecast(people, newGetWellDays, initiallySick, initiallyVacc, percentSick, getVac, runtimes, true);
+		InfoJungStorage results = methods.simulateForSniffleForecast(people, getWellDays, initiallySick, initiallyVacc, percentSick, getVac, runtimes, true);
 		
 		//Make Universal Timeline Table
 		ArrayList<ArrayList<Integer>> finalTable = finalTable(simulatedData, results, numDays, methods, people, denominator);
@@ -100,10 +106,9 @@ public class SniffleForecast {
 		ArrayList<InfoStorage> averageInfoStorages = methods.averagedInfostorageLog(infoStorages);
 		for(InfoStorage dayEntry : averageInfoStorages){
 			ArrayList<Integer> day = new ArrayList<Integer>(); 
-			day.add((int) (people.size() - dayEntry.getTotalSick()));
+			day.add((int) (people.size() - dayEntry.getImmune() - dayEntry.getNumSick()));
 			day.add((int) dayEntry.getNumSick());
 			day.add((int) dayEntry.getImmune());
-			
 			table.add(day);
 		}
 		return table;

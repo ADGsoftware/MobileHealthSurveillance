@@ -1190,7 +1190,6 @@ public class MoreMethods {
 			while (getNumSickPeople(people) > 0) {
 				//int numberSickOnDay = 0;
 				for (Person person : people) {
-
 					if (person.isImmune() && !person.isSick()) {
 						// Do nothing
 					} else if (person.isSick()) {
@@ -1225,7 +1224,7 @@ public class MoreMethods {
 							}
 						}
 					}
-					if (person.getDaysSick() >= getWellDays) { // && !person.isImmune()
+					if (person.getDaysSick() >= getWellDays && !person.isImmune()) { // && !person.isImmune()
 						person.getWell();
 						totalImmunePeople.add(person.getID());
 					}
@@ -1613,8 +1612,14 @@ public class MoreMethods {
 				minDayLength = runtimeList.size();
 			}
 		}
-		
+		for(ArrayList<InfoStorage> runtimeList : simOutput){
+			System.out.println("New Run Time!!!!!!!!!!!!!!!!");
+			for(InfoStorage day: runtimeList){
+				System.out.println(day);
+			}
+		}
 		//FindAverages
+		System.out.println("MinDayLength: " + minDayLength);
 		for (int day = 0; day < minDayLength; day++){
 			for(ArrayList<InfoStorage> runtimeList : simOutput){
 				costs.add(runtimeList.get(day).getCost());
@@ -1622,20 +1627,22 @@ public class MoreMethods {
 				totalSick.add(runtimeList.get(day).getTotalSick());
 				totalImmune.add(runtimeList.get(day).getImmune());
 				currentlySick.add(runtimeList.get(day).getNumSick());
-				System.out.println(runtimeList.get(day).getTotalSick());
-				
-				int avgCost = (int) Math.round(findAverage(costs));
-				int avgDays = (int) Math.round(findAverage(days));
-				int avgTotalSick = (int) Math.round(findAverage(totalSick));
-				int avgImmunePeople = (int) Math.round(findAverage(totalImmune));
-				int avgCurrentlySick = (int) Math.round(findAverage(currentlySick));
-				
-				InfoStorage dayEntry = new InfoStorage(avgDays, avgCurrentlySick, avgTotalSick, avgCost, avgImmunePeople);
-				averagedInfostorageLog.add(dayEntry);
 			}
-		}
-		for(InfoStorage i : averagedInfostorageLog){
-			System.out.println(i.getNumSick());
+			int avgCost = (int) Math.round(findAverage(costs));
+			System.out.println("currentlySick: " + currentlySick.size());
+			int avgDays = (int) Math.round(findAverage(days));
+			int avgTotalSick = (int) Math.round(findAverage(totalSick));
+			int avgImmunePeople = (int) Math.round(findAverage(totalImmune));
+			int avgCurrentlySick = (int) Math.round(findAverage(currentlySick));
+			
+			costs.clear();
+			days.clear();
+			totalSick.clear();
+			totalImmune.clear();
+			currentlySick.clear();
+			
+			InfoStorage dayEntry = new InfoStorage(avgDays, avgCurrentlySick, avgTotalSick, avgCost, avgImmunePeople);
+			averagedInfostorageLog.add(dayEntry);
 		}
 		return averagedInfostorageLog;
 	}
