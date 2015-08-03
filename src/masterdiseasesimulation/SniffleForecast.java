@@ -6,7 +6,7 @@ import java.util.Random;
 
 import datacontainers.InfoJungStorage;
 import datacontainers.InfoStorage;
-
+import infectionrate.Simulator;
 import moremethods.GetData;
 import moremethods.MoreMethods;
 import simulateddata.DataSimulator;
@@ -17,6 +17,7 @@ public class SniffleForecast {
 		int numDays = 10;
 		String town = "Needham";
 		String state =  "MA";
+		
 		int minFriends = 2;
 		int maxFriends = 5;
 		int hubNumber = 0;
@@ -39,6 +40,12 @@ public class SniffleForecast {
 		//Begin by Simulating Data
 		DataSimulator dataSim = new DataSimulator();
 		int[][] simulatedData = dataSim.run(numUsers, numDays, town, state);
+		
+		// Get infection rate
+		Simulator infectionRate = new Simulator(numUsers);
+		float p = infectionRate.run(simulatedData[1]);
+		System.out.println(p);
+		System.out.println("-------------------------------------------------------------------------------------------");
 		
 		// Place holder for when Dyushka comes back and helps us out with Z
 		percentSick = 10;

@@ -28,7 +28,7 @@ public class DataSimulator {
 		// Generate data for days
 		Random r = new Random();
 		for (day = 0; day < numDays; day++) {
-			System.out.println("Day: " + day);
+			//System.out.println("Day: " + day);
 			if (r.nextDouble() < 0.3) {
 				ArrayList<User> newUser = createUsers(1, town, state, numDays, day);
 				if (newUser != null) {
