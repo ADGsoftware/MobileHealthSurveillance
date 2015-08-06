@@ -1,5 +1,10 @@
 package infectionrate;
 
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,7 +18,7 @@ public class Simulator {
 
     //Values TODO: Add as parameters
     int simulationDuration = 25;
-    int recoveryDays = 3;
+    int recoveryDays = 5;
     int simulationNum = 1000;
 
     //State values
@@ -28,22 +33,20 @@ public class Simulator {
         this.people = people;
         this.numberOfPeopleOriginallyInfected = numberOfPeopleOriginallyInfected;
     }
-    
-    public Simulator(int numPeople) {
-    	this.people = new ArrayList<Person>();
-    	for (int i = 0; i < numPeople; i++) {
-    		this.people.add(new Person(i));
-    	}
+    public Simulator(int numPeople, int minFriends, int maxFriends) throws NotYetSupportedException, InfiniteLoopException, ObsoleteException {
+        this.people = Utils.createSimulatedData(numPeople, Constants.BARABÀSI_ALBERT, new Range(minFriends, maxFriends)); //Well, what can I say? You better support unicode.
     }
 
     public float run(int[] infectedList) {
         //GENERATE GIVEN HISTORY
 //        givenHistory = simulate(19);
+    	this.numberOfPeopleOriginallyInfected = infectedList[0];
     	for (int i = 0; i < infectedList.length; i++) {
     		givenHistory.add(new DayInfo(i, infectedList[i]));
     	}
-    	System.out.println(givenHistory);
-    	numberOfPeopleOriginallyInfected = infectedList[0];
+    	
+    	System.out.println("GivenHistory: " + givenHistory);
+//    	this.numberOfPeopleOriginallyInfected = 1;
 //        DayInfo day1 = new DayInfo(0, 1);
 //        DayInfo day2 = new DayInfo(1, 2);
 //        DayInfo day3 = new DayInfo(2, 5);
@@ -66,7 +69,7 @@ public class Simulator {
 
 
 
-//        Step 1. Infect the people that should be originally infected.
+        //Step 1. Infect the people that should be originally infected.
         for (int i = 0; i < numberOfPeopleOriginallyInfected; i++) {
             Person person = people.get(Utils.randInt(0, people.size() - 1));
             while (person.getState() == infected) {
@@ -75,12 +78,12 @@ public class Simulator {
             person.setState(infected);
         }
 
-        //System.out.println("Warming up...|    20%   |    30%   |    40%   |    50%   |    60%   |    70%   |    80%   |    90%   |COMPLETE!|");
-        //System.out.print("0");
+        System.out.println("Warming up...|    20%   |    30%   |    40%   |    50%   |    60%   |    70%   |    80%   |    90%   |COMPLETE!|");
+        System.out.print("0");
 
         //Step 2. Simulate with this List of people.
         for (int i = 0; i < 100; i+=1) {
-            //System.out.print("0");
+            System.out.print("0");
             List<DayInfo> history = simulate(i);
             histories.add(history);
 
@@ -99,15 +102,23 @@ public class Simulator {
             }
         }
 
-        //System.out.print("|COMPLETE!|");
-        //System.out.println();
+        System.out.print("|COMPLETE!|");
+        System.out.println();
 
 
         Float[] percentageAndError = findClosestMatch(givenHistory, histories);
 
-        //System.out.println("The given history is closest to " + percentageAndError[0] + "% with offset [unknown], with an error of " + percentageAndError[1] + ".");
+        System.out.println("The given history is closest to " + percentageAndError[0] + "% with offset [unknown], with an error of " + percentageAndError[1] + ".");
         
         return percentageAndError[0];
+        
+        //Make chart
+//        try {
+//            createGraph();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     /**
@@ -159,12 +170,14 @@ public class Simulator {
                         }
                     }
                 }
+
                 //Step 2. Loop through each person, and, if the person is sick, add a day to his counter.
                 for (Person p : people) {
                     if (p.getState() == infected) {
                         p.incrementSickDays();
                     }
                 }
+
                 //Step 3. Loop through each person, and, if the person is sick and his sick counter reached the limit, make the person recover.
                 for (Person p : people) {
                     if (p.getState() == infected) {
@@ -230,6 +243,73 @@ public class Simulator {
         return dayInfos;
     }
 
+
+    /*
+
+
+    DOES NOT WORK!!!!!! DO NOT USE THIS METHOD!!!!
+
+
+
+     */
+    /**
+     * Returns the closest match with an offset. THIS ASSUMES THAT ALL GIVEN HISTORIES DO NOT HAVE ANY 0-SICK DAYS IN THE BEGINNING.
+     * @param history - the given history
+     * @param histories - the simulated histories
+     * @return
+     * /
+    private Float[] findClosestMatchWithOffset(List<DayInfo> history, List<List<DayInfo>> histories) {
+        int maxOffset = simulationDuration - history.size();
+
+        Float[][] offsetMatches = new Float[maxOffset][2];
+
+        for (int i = 0; i < maxOffset - 1; i++) {
+            System.out.println("At offset " + i + ".");
+            List<DayInfo> offsetHistory = new ArrayList<DayInfo>();
+
+            //Populate list
+            for (int j = 0; j < history.size(); j++) {
+                offsetHistory.add(new DayInfo(j, 0));
+            }
+
+            //Finish list with zeroes
+            for (int j = history.size(); j < simulationDuration; j++) {
+                history.add(new DayInfo(j, 0));
+            }
+
+            history.get(23);
+
+            //Shift all list values from original list by the offset amount
+            for (int k = 0; k < offsetHistory.size() - i; k++) {
+                offsetHistory.set(k, history.get(k + i));
+            }
+
+            Float[] matchForThisOffset = findClosestMatch(offsetHistory, histories);
+            offsetMatches[i][0] = matchForThisOffset[0];
+            offsetMatches[i][1] = matchForThisOffset[1];
+        }
+
+        float error = Float.MAX_VALUE;
+        float percentage = 0;
+        float offset = 0;
+        for (int i = 0; i < offsetMatches.length; i++)  {
+            if (offsetMatches[i][1] < error) {
+                error = offsetMatches[i][1];
+                percentage = offsetMatches[i][0];
+                offset = i;
+            }
+        }
+
+        Float[] errorAndPercentageAndOffset = new Float[2];
+        errorAndPercentageAndOffset[0] = error;
+        errorAndPercentageAndOffset[1] = percentage;
+        errorAndPercentageAndOffset[2] = offset;
+
+        return errorAndPercentageAndOffset;
+    }
+
+    */
+
     private Float[] findClosestMatch(List<DayInfo> history, List<List<DayInfo>> histories) {
         List<Float> percentageScores = new ArrayList<Float>();
 
@@ -247,7 +327,7 @@ public class Simulator {
         }
 
         for (Float percentageScore : percentageScores) {
-            //System.out.println("Variation from " + percentageScores.indexOf(percentageScore) + ": " + percentageScore + ".");
+//            System.out.println("Variation from " + percentageScores.indexOf(percentageScore) + ": " + percentageScore + ".");
         }
 
         int percentage = percentageScores.indexOf(Collections.min(percentageScores));
@@ -256,6 +336,30 @@ public class Simulator {
         percentageAndError[1] = Collections.min(percentageScores);
 
         return percentageAndError;
+    }
+
+    private void createGraph() throws IOException {
+        XYSeriesCollection dataset = new XYSeriesCollection();
+
+        for (int i = 0; i < histories.size(); i++) {
+//            System.out.println("Welcome to History " + i + ".");
+            List<DayInfo> history = histories.get(i);
+
+            XYSeries series = new XYSeries(i);
+
+            series.add(0, numberOfPeopleOriginallyInfected);
+
+            for (DayInfo day : history) {
+//                System.out.println("Welcome to day " + day.getDay() + "! There are " + day.getNumSick() + " people infected.");
+                series.add(day.getDay(), day.getNumSick());
+            }
+
+            dataset.addSeries(series);
+
+//            System.out.println("The maximum number of sick people is " + series.getMaxY() + ".");
+        }
+
+        Main.dataset = dataset;
     }
 
     private boolean r(int percentage) {

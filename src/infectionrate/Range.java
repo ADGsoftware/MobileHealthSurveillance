@@ -10,15 +10,14 @@ public class Range {
      * @param min - lower bound of the range.
      * @param max - upper bound of the range.
      * @param type - type of distribution (linear or Gaussian; default is linear)
-     * @throws Exception 
      */
-    public Range(int min, int max, int... type) throws Exception {
+    public Range(int min, int max, int... type) throws NotYetSupportedException {
         this.min = min;
         this.max = max;
         if (type.length > 0) {
             this.type = type[0];
             if (type[0] == Constants.RANGE_GAUSSIAN) {
-                throw new Exception();
+                throw new NotYetSupportedException("The Gaussian distribution for ranges is not yet supported.");
             }
         } else {
             this.type = Constants.RANGE_LINEAR;

@@ -1613,13 +1613,13 @@ public class MoreMethods {
 			}
 		}
 		for(ArrayList<InfoStorage> runtimeList : simOutput){
-			System.out.println("New Run Time!!!!!!!!!!!!!!!!");
+			//System.out.println("New Run Time!!!!!!!!!!!!!!!!");
 			for(InfoStorage day: runtimeList){
-				System.out.println(day);
+				//System.out.println(day);
 			}
 		}
 		//FindAverages
-		System.out.println("MinDayLength: " + minDayLength);
+		//System.out.println("MinDayLength: " + minDayLength);
 		for (int day = 0; day < minDayLength; day++){
 			for(ArrayList<InfoStorage> runtimeList : simOutput){
 				costs.add(runtimeList.get(day).getCost());
@@ -1629,7 +1629,7 @@ public class MoreMethods {
 				currentlySick.add(runtimeList.get(day).getNumSick());
 			}
 			int avgCost = (int) Math.round(findAverage(costs));
-			System.out.println("currentlySick: " + currentlySick.size());
+			//System.out.println("currentlySick: " + currentlySick.size());
 			int avgDays = (int) Math.round(findAverage(days));
 			int avgTotalSick = (int) Math.round(findAverage(totalSick));
 			int avgImmunePeople = (int) Math.round(findAverage(totalImmune));

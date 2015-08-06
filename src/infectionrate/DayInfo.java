@@ -21,7 +21,7 @@ public class DayInfo {
         this.numSick = numSick;
     }
     
-    public String toString() {
+    public String toString () {
     	return "" + numSick;
     }
 }

@@ -4,6 +4,7 @@ import org.apache.commons.collections15.Transformer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 //Ladies and Gnetlemen lo and behold the Person class *Correction : "Klass!!!!!!!"
 public class Person implements Transformer<Person, String>, Comparator<Person> {
@@ -211,6 +212,10 @@ public class Person implements Transformer<Person, String>, Comparator<Person> {
 	public void setConnecticity(float newValue) {
 		this.connectivityAroundPerson = newValue;
 	}
+	
+	public void setFriends(ArrayList<Person> friends) {
+        this.friends = friends;
+    }
 
 	// Get the Connectivity Value ----------------------------------------------------------------------
 	public float getConnectivity() {

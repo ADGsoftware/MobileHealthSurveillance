@@ -23,7 +23,7 @@ public class DataSimulator {
 		
 		// Create users
 		ArrayList<User> users = createUsers(numUsers, town, state, numDays, day);
-		System.out.println(users);
+//		System.out.println(users);
 		
 		// Generate data for days
 		Random r = new Random();
@@ -41,21 +41,21 @@ public class DataSimulator {
 			}
 		}
 		
-		System.out.println(users);
+		//System.out.println(users);
 		
 		// Insert -1 randomly
 		for (User user : users) {
 			user.insertNoInput();
 		}
 		
-		System.out.println(users);
+//		System.out.println(users);
 		
 		// Fix locations with -1 input
 		for (User user : users) {
 			user.fixInput();
 		}
 		
-		System.out.println(users);
+//		System.out.println(users);
 		
 		// Sum up # of S, I, and R users on each day
 		int[][] data = getSums(numDays, users);
@@ -64,9 +64,9 @@ public class DataSimulator {
 		int[] recovered = data[2];
 		int[][] arrays = {susceptible, infected, recovered};
 		
-		System.out.println(User.printArray(susceptible));
-		System.out.println(User.printArray(infected));
-		System.out.println(User.printArray(recovered));
+		System.out.println("Susceptible: " + User.printArray(susceptible));
+		System.out.println("Infected: " + User.printArray(infected));
+		System.out.println("Recovered: " + User.printArray(recovered));
 		
 		return arrays;
 	}

@@ -100,7 +100,7 @@ public class GetData {
 		int numZips = zips.size();
 		createProgressBar(numZips);
 		generateVars();
-		System.out.println(zips);
+		System.out.println("Zips: " + zips);
 
 		ArrayList<Integer[]> hsAll = new ArrayList<Integer[]>();
 		ArrayList<Double[]> haAll = new ArrayList<Double[]>();
@@ -139,8 +139,11 @@ public class GetData {
 		ha = sumDouble(haAll);
 		ages = sumDouble(agesAll);
 		
+		System.out.print("hs: ");
 		printArray(hs);
+		System.out.print("ha: ");
 		printArray(ha);
+		System.out.print("ages: ");
 		printArray(ages);
 		
 		closeProgressBar();
