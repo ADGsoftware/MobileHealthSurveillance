@@ -18,7 +18,7 @@ public class Simulator {
 
     //Values TODO: Add as parameters
     int simulationDuration = 25;
-    int recoveryDays = 5;
+    int recoveryDays = 3;
     int simulationNum = 1000;
 
     //State values
@@ -316,7 +316,7 @@ public class Simulator {
         for (List<DayInfo> percentage : histories) {
 //            System.out.println("Doing percentage number " + histories.indexOf(percentage) + ".");
             float percentageScore = 0;
-            for (int i = 0; i < history.size(); i++) {
+            for (int i = 0; i < history.size() && i < percentage.size(); i++) {
 //                System.out.println("Comparing day " + i + "...");
                 float valueForThisPercentage = percentage.get(i).getNumSick();
                 float valueForGivenHistory = history.get(i).getNumSick();

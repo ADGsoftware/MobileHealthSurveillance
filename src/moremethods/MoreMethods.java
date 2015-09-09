@@ -36,6 +36,7 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
@@ -1495,15 +1496,37 @@ public class MoreMethods {
 
 		return lineChart;
 	}
+	
+	public static File makeChartSniffle(XYSeriesCollection dataset, String filename, String title, String xAxis, String yAxis) throws IOException {
+		JFreeChart lineChartObject = ChartFactory.createXYLineChart(title, xAxis, yAxis, dataset, PlotOrientation.VERTICAL, true, true, false);
+		
+		XYPlot plot = (XYPlot) lineChartObject.getPlot();	
+		int seriesCount = plot.getSeriesCount();
+
+		for (int i = 0; i < seriesCount; i++) {
+		   plot.getRenderer().setSeriesStroke(i, new BasicStroke(5));
+		}
+		
+		ValueMarker marker = new ValueMarker(10);  // position is the value on the axis
+		marker.setPaint(Color.black);
+		plot.addDomainMarker(marker);
+		
+		int width = 960;
+		int height = 720;
+		File lineChart = new File(filename + ".png");
+		ChartUtilities.saveChartAsPNG(lineChart, lineChartObject, width, height);
+
+		return lineChart;
+	}
 
 	public static File makeChart(XYSeriesCollection dataset, String filename, String title, String xAxis, String yAxis) throws IOException {
 		JFreeChart lineChartObject = ChartFactory.createXYLineChart(title, xAxis, yAxis, dataset, PlotOrientation.VERTICAL, true, true, false);
 		
-		XYPlot plot = (XYPlot) lineChartObject.getPlot();		
+		XYPlot plot = (XYPlot) lineChartObject.getPlot();	
 		int seriesCount = plot.getSeriesCount();
 
 		for (int i = 0; i < seriesCount; i++) {
-		   plot.getRenderer().setSeriesStroke(i, new BasicStroke(10));
+		   plot.getRenderer().setSeriesStroke(i, new BasicStroke(5));
 		}
 		
 		int width = 960;
