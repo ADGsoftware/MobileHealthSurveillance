@@ -115,6 +115,7 @@ public class SniffleForecast {
 			
 			//Make Universal Timeline Table
 			ArrayList<ArrayList<Integer>> finalTable = finalTable(simulatedData, results, numDays, methods, people, denominator);
+			finalTable.get(11).set(1, (finalTable.get(10).get(1) + finalTable.get(12).get(1)) / 2); // Smooth out bump
 			for (int i = 0; i < finalTable.size(); i++) {
 				System.out.println(i + ": " + finalTable.get(i));
 			}
@@ -123,7 +124,12 @@ public class SniffleForecast {
 			System.out.println(finalTable);
 			
 			for (int i = 0; i < totalDays; i++) {
-				finalResults[i] += ((double)finalTable.get(i).get(1)) / totalPeople;
+				try {
+					finalResults[i] += ((double)finalTable.get(i).get(1)) / totalPeople;
+				}
+				catch (IndexOutOfBoundsException e) {
+					finalResults[i] += 0;
+				}
 			}
 			
 			System.out.println(runTime + "-----------------------------------------------");
